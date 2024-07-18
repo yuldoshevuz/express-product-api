@@ -32,7 +32,7 @@ Create a `.env` file and add the following variables:
     DB_HOST=localhost
     DB_PORT=5432
     DB_USER=postgres
-    DB_PASSWORD=85627566
+    DB_PASSWORD=your_db_password
     DB_NAME=express_product_api
     ```
 
