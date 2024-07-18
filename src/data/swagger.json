@@ -1,223 +1,200 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "description": "This is a RESTful API for managing products, featuring JWT-based authentication to protect routes.",
-      "version": "1.0.0",
-      "title": "JWT Protected Product API"
-    },
-    "host": "localhost:5002",
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "auth",
-        "description": "Authentication related endpoints"
-      },
-      {
-        "name": "products",
-        "description": "Product management endpoints"
-      }
-    ],
-    "schemes": [
-      "http"
-    ],
-    "paths": {
-      "/auth/register": {
-        "post": {
-          "tags": ["auth"],
-          "summary": "Register a new user",
-          "description": "This endpoint registers a new user",
-          "consumes": ["application/json"],
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User object that needs to be registered",
-              "required": true,
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Express Product API",
+    "version": "1.0.0",
+    "description": "A RESTful API for managing products with JWT authentication. Built using Node.js, Express.js, and PostgreSQL with Sequelize ORM."
+  },
+  "servers": [
+    {
+      "url": "https://yuldoshev.uz/express-product-api",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Create a new user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
               "schema": {
-                "$ref": "#/definitions/UserRegister"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "User registered successfully",
-              "schema": {
-                "$ref": "#/definitions/UserResponse"
-              }
-            },
-            "400": {
-              "description": "Please send all parameters",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
-              }
-            },
-            "400 ": {
-              "description": "A user with this email address already exists",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
-              }
-            }
-          }
-        }
-      },
-      "/auth/login": {
-        "post": {
-          "tags": ["auth"],
-          "summary": "Login a user",
-          "description": "This endpoint logs in a user",
-          "consumes": ["application/json"],
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "User login credentials",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/UserLogin"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "User logged in successfully",
-              "schema": {
-                "$ref": "#/definitions/UserLoginResponse"
-              }
-            },
-            "400": {
-              "description": "Please send all parameters",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
-              }
-            },
-            "400 ": {
-              "description": "Invalid email or password",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
-              }
-            }
-          }
-        }
-      },
-      "/products": {
-        "get": {
-          "tags": ["products"],
-          "summary": "Fetch all products",
-          "description": "This endpoint fetches all products",
-          "produces": ["application/json"],
-          "responses": {
-            "200": {
-              "description": "Products fetched successfully",
-              "schema": {
-                "$ref": "#/definitions/ProductListResponse"
+                "$ref": "#/components/schemas/UserRegistration"
               }
             }
           }
         },
-        "post": {
-          "tags": ["products"],
-          "summary": "Create a new product",
-          "description": "This endpoint creates a new product",
-          "consumes": ["application/json"],
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "description": "Product object that needs to be created",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/ProductCreate"
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
               }
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product created successfully",
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login a user",
+        "description": "Authenticate a user and return a JWT token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
               "schema": {
-                "$ref": "#/definitions/ProductResponse"
+                "$ref": "#/components/schemas/UserLogin"
               }
-            },
-            "400": {
-              "description": "Please send all parameters",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid email or password"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Retrieve all products",
+        "description": "Get a list of all products.",
+        "responses": {
+          "200": {
+            "description": "List of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
               }
             }
           }
         }
       },
-      "/products/{id}": {
-        "put": {
-          "tags": ["products"],
-          "summary": "Update an existing product",
-          "description": "This endpoint updates an existing product",
-          "consumes": ["application/json"],
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "description": "Product ID",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "in": "body",
-              "name": "body",
-              "description": "Product object that needs to be updated",
-              "required": true,
+      "post": {
+        "summary": "Create a new product",
+        "description": "Add a new product to the inventory.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
               "schema": {
-                "$ref": "#/definitions/ProductUpdate"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product updated successfully",
-              "schema": {
-                "$ref": "#/definitions/ProductResponse"
-              }
-            },
-            "400": {
-              "description": "Please send all parameters",
-              "schema": {
-                "$ref": "#/definitions/ErrorResponse"
+                "$ref": "#/components/schemas/ProductCreation"
               }
             }
           }
         },
-        "delete": {
-          "tags": ["products"],
-          "summary": "Delete a product",
-          "description": "This endpoint deletes a product",
-          "produces": ["application/json"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "description": "Product ID",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product deleted successfully",
-              "schema": {
-                "$ref": "#/definitions/DeleteResponse"
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
               }
             }
+          },
+          "400": {
+            "description": "Invalid request parameters"
           }
         }
       }
     },
-    "definitions": {
-      "UserRegister": {
+    "/products/{id}": {
+      "put": {
+        "summary": "Update an existing product",
+        "description": "Modify the details of an existing product.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a product",
+        "description": "Remove a product from the inventory.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product deleted successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistration": {
         "type": "object",
-        "required": ["fullName", "email", "password"],
         "properties": {
           "fullName": {
             "type": "string",
@@ -231,11 +208,11 @@
             "type": "string",
             "example": "password123"
           }
-        }
+        },
+        "required": ["fullName", "email", "password"]
       },
       "UserLogin": {
         "type": "object",
-        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
@@ -245,7 +222,8 @@
             "type": "string",
             "example": "password123"
           }
-        }
+        },
+        "required": ["email", "password"]
       },
       "UserResponse": {
         "type": "object",
@@ -271,11 +249,13 @@
               },
               "createdAt": {
                 "type": "string",
-                "example": "<created-time>"
+                "format": "date-time",
+                "example": "2024-07-18T12:00:00Z"
               },
               "updatedAt": {
                 "type": "string",
-                "example": "<updated-time>"
+                "format": "date-time",
+                "example": "2024-07-18T12:00:00Z"
               }
             }
           }
@@ -309,118 +289,94 @@
               },
               "createdAt": {
                 "type": "string",
-                "example": "<created-time>"
+                "format": "date-time",
+                "example": "2024-07-18T12:00:00Z"
               },
               "updatedAt": {
                 "type": "string",
-                "example": "<updated-time>"
+                "format": "date-time",
+                "example": "2024-07-18T12:00:00Z"
               }
             }
           }
         }
       },
-      "ProductCreate": {
+      "Product": {
         "type": "object",
-        "required": ["name", "description", "price"],
         "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
           "name": {
             "type": "string",
-            "example": "Something"
+            "example": "Product Name"
           },
           "description": {
             "type": "string",
-            "example": "Some description"
+            "example": "Product Description"
           },
           "price": {
             "type": "number",
-            "example": 12
+            "format": "float",
+            "example": 99.99
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-07-18T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-07-18T12:00:00Z"
           }
         }
+      },
+      "ProductCreation": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Product Name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Product Description"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 99.99
+          }
+        },
+        "required": ["name", "description", "price"]
       },
       "ProductUpdate": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "example": "Something 2"
+            "example": "Updated Product Name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Updated Product Description"
           },
           "price": {
             "type": "number",
-            "example": 25
-          }
-        }
-      },
-      "ProductResponse": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer",
-                "example": 3
-              },
-              "name": {
-                "type": "string",
-                "example": "Something"
-              },
-              "description": {
-                "type": "string",
-                "example": "Some description"
-              },
-              "price": {
-                "type": "number",
-                "example": 12
-              }
-            }
-          }
-        }
-      },
-      "ProductListResponse": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": true
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/ProductResponse/data"
-            }
-          }
-        }
-      },
-      "DeleteResponse": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": true
-          },
-          "message": {
-            "type": "string",
-            "example": "Deleted successfully"
-          }
-        }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": false
-          },
-          "message": {
-            "type": "string",
-            "example": "Please send all parameters"
+            "format": "float",
+            "example": 109.99
           }
         }
       }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
     }
   }
-  
+}
