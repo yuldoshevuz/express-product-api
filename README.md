@@ -2,7 +2,7 @@
 
 This project implements a RESTful API with JWT authentication for managing products using Node.js, Express.js, and PostgreSQL with Sequelize ORM.
 
-**Deployed Application:** The deployed application can be accessed at [Authentication Service](https://yuldoshev.uz/express-product-api).
+**Deployed Application:** The deployed application can be accessed at [Express Product API](https://yuldoshev.uz/express-product-api).
 
 ## Getting Started
 
